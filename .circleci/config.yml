@@ -5,7 +5,6 @@ jobs:
     docker:
       - image: cimg/base:2021.07
     steps:
-      - checkout
       - run: echo "test"
 
 workflows:
