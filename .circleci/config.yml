@@ -1,15 +1,98 @@
 version: 2.1
 
+# The lein image needed for most things.
+lein_image: &lein_image
+  image: circleci/ruby:2.4.1
+  auth:
+    username: $DOCKER_HUB_USER
+    password: $DOCKER_HUB_PASSWORD
 jobs:
   build:
     docker:
-      - image: cimg/base:2022.07
+      - *lein_image
     steps:
-      - run: echo "test"
+      - run: echo << pipeline.trigger_parameters.gitlab.user_username >>
+  check_syntax:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the check_syntax job"
+  test:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the test job"
+  coverage:
+    docker:
+      - image: circleci/ruby:2.4.1
+        auth:
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASSWORD
+    steps:
+      - run: sleep 6
+  job1:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the 1job job"
+  job2:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the 2job job"
+  job3:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the 3job job"
+  job4:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the 4job job"
+  job5:
+    docker:
+      - *lein_image
+    steps:
+      - run: echo "this is the 5job job"
+  job6:
+    docker:
+      - *lein_image
+    steps:
       - checkout
+      - run: echo << pipeline.trigger_parameters.gitlab.user_username >>
 
 workflows:
-  workflow1:
+  version: 2
+  # workflow-with-fan-out:
+  #   jobs:
+  #     - build
+  #     - test:
+  #         requires:
+  #           - build
+  #     - job1:
+  #         requires:
+  #           - test
+  #     - job2:
+  #         requires:
+  #           - test
+  #     - job3:
+  #         requires:
+  #           - test
+  #     - job4:
+  #         requires:
+  #           - test
+  #     - job5:
+  #         requires:
+  #           - test
+            
+  workflow-with-fan-in:
     jobs:
-      - build
- 
+      - check_syntax
+      - job6:
+          requires:
+            - check_syntax
+      - coverage:
+          requires:
+            - job6
+            
