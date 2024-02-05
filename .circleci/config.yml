@@ -60,7 +60,7 @@ jobs:
       - *lein_image
     steps:
       - checkout
-      - run: echo << pipeline.trigger_parameters.gitlab.user_username >>
+      - run: echo << pipeline.id >>
 
 workflows:
   version: 2
