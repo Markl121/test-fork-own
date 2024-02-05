@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: alpine
     steps:
+      - checkout
       - run:
           name: Display values
           command: "echo job-only-main"
